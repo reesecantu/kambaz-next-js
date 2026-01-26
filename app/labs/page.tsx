@@ -5,6 +5,7 @@ export default function labs() {
     <LabsLayout>
       <div id="wd-labs">
         <h1>Labs</h1>
+        <h2>Reese Cantu</h2>
         <ul>
           <li>
             <Link href="/Labs/Lab1" id="wd-lab1-link">
