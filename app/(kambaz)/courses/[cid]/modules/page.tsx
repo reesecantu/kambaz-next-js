@@ -2,6 +2,8 @@ export default function Modules() {
   return (
     <div>
       {/* Implement Collapse All button, View Progress button, etc. */}
+      <button>Collapse ALL</button> <button>View Progress</button>
+      <button>Publish ALL</button> <button>+ Module</button>
       <ul id="wd-modules">
         <li className="wd-module">
           <div className="wd-title">Week 1</div>
@@ -10,14 +12,22 @@ export default function Modules() {
               <span className="wd-title">LEARNING OBJECTIVES</span>
               <ul className="wd-content">
                 <li className="wd-content-item">Introduction to the course</li>
-                <li className="wd-content-item">Learn what is Web Development</li>
+                <li className="wd-content-item">
+                  Learn what is Web Development
+                </li>
               </ul>
             </li>
           </ul>
         </li>
-        <li className="wd-module"> <div className="wd-title">Week 2</div> </li>
-        <li className="wd-module"> <div className="wd-title">Week 3</div> </li>
+        <li className="wd-module">
+          {" "}
+          <div className="wd-title">Week 2</div>{" "}
+        </li>
+        <li className="wd-module">
+          {" "}
+          <div className="wd-title">Week 3</div>{" "}
+        </li>
       </ul>
     </div>
-);}
-
+  );
+}

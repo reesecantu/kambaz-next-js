@@ -311,7 +311,11 @@ export default function Lab1() {
           />
           <br />
           <h4>Anchor tag</h4>
-          Please <a href="https://www.lipsum.com" id="wd-lipsum">click here</a> to get dummy text
+          Please{" "}
+          <a href="https://www.lipsum.com" id="wd-lipsum">
+            click here
+          </a>{" "}
+          to get dummy text
           <br />
         </form>
       </div>
