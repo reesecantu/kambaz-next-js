@@ -1,7 +1,10 @@
 import React, { ReactNode } from "react";
 import KambazNavigation from "./Navigation";
+import "./styles.css";
 
-export default function KambazLayout({ children }: Readonly<{ children: ReactNode }>) {
+export default function KambazLayout({
+  children,
+}: Readonly<{ children: ReactNode }>) {
   return (
     <div id="wd-kambaz">
       <div className="d-flex">
@@ -9,7 +12,7 @@ export default function KambazLayout({ children }: Readonly<{ children: ReactNod
           <KambazNavigation />
         </div>
 
-        <div className="flex-fill">{children}</div>
+        <div className="wd-main-content-offset p-3 flex-fill">{children}</div>
       </div>
     </div>
   );
