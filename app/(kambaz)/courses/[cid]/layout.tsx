@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
-import CourseNavigation from "../../account/Navigation/page";
+import CourseNavigation from "../CourseNavigation";
+
 
 export default async function CoursesLayout({
   children,
