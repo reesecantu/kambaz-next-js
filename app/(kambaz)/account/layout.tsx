@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
-import AccountNavigation from "./Navigation/page";
+import ProfileNavigation from "./ProfileNavigation";
+
 
 export default function AccountLayout({
   children,
@@ -11,7 +12,7 @@ export default function AccountLayout({
           <tr>
             <td valign="top">
               {" "}
-              <AccountNavigation />{" "}
+              <ProfileNavigation />{" "}
             </td>
             <td valign="top" width="100%">
               {" "}
