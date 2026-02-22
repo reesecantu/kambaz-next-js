@@ -1,8 +1,52 @@
+/* eslint-disable react/jsx-key */
+"use client";
+
+import { usePathname } from "next/navigation";
 import Link from "next/link";
-export default function CourseNavigation() {
+export default function CourseNavigation({ cid }: { cid: string }) {
+  const links = [
+    "Home",
+    "Modules",
+    "Piazza",
+    "Zoom",
+    "Assignments",
+    "Quizzes",
+    "Grades",
+    "People",
+  ];
+  const pathname = usePathname();
+
+  const getLinkPath = (link: string) => {
+    if (link === "People") {
+      return `/courses/${cid}/people/table`;
+    }
+    return `/courses/${cid}/${link.toLowerCase()}`;
+  };
+
+  const isLinkActive = (link: string) => {
+    if (link === "People") {
+      return pathname.startsWith(`/courses/${cid}/people`);
+    }
+    return pathname.startsWith(`/courses/${cid}/${link.toLowerCase()}`);
+  };
+
   return (
     <div id="wd-courses-navigation" className="wd list-group fs-5 rounded-0">
-      <Link
+      {links.map((link) => {
+        const isActive = isLinkActive(link);
+        return (
+          <Link
+            key={link}
+            href={getLinkPath(link)}
+            id={`wd-course-${link.toLowerCase()}-link`}
+            className={`list-group-item border-0 ${isActive ? "active" : "text-danger"}`}
+          >
+            {" "}
+            {link}{" "}
+          </Link>
+        );
+      })}
+      {/* <Link
         href="/courses/1234/home"
         id="wd-course-home-link"
         className="list-group-item active border-0"
@@ -57,7 +101,7 @@ export default function CourseNavigation() {
       >
         {" "}
         People{" "}
-      </Link>
+      </Link> */}
     </div>
   );
 }
