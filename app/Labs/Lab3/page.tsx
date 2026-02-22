@@ -25,6 +25,9 @@ import FunctionDestructing from "./FunctionDestructing";
 import DestructingImports from "./DestructingImports";
 import Classes from "./Classes";
 import Styles from "./Styles";
+import ClientComponentDemo from "./ClientComponentDemo";
+import ServerComponentDemo from "./ServerComponentDemo";
+import Add from "./Add";
 
 export default function Lab3() {
   return (
@@ -57,6 +60,9 @@ export default function Lab3() {
       <DestructingImports />
       <Classes />
       <Styles />
+      <ClientComponentDemo />
+      <ServerComponentDemo />
+      <Add a={3} b={5} />
     </div>
   );
 }
