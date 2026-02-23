@@ -1,3 +1,4 @@
+"use client";
 import Link from "next/link";
 import { ListGroup, ListGroupItem, Button, FormControl } from "react-bootstrap";
 import { BsGripVertical } from "react-icons/bs";
@@ -6,8 +7,11 @@ import { IoEllipsisVertical } from "react-icons/io5";
 import { FaSearch } from "react-icons/fa";
 import { MdOutlineAssignment } from "react-icons/md";
 import GreenCheckmark from "./GreenCheckmark";
-
+import * as db from "../../../database";
+import { useParams } from "next/navigation";
 export default function Assignments() {
+  const { cid } = useParams();
+  const assignments = db.assignments;
   return (
     <div id="wd-assignments">
       <div className="d-flex justify-content-between align-items-center mb-4">
@@ -50,74 +54,35 @@ export default function Assignments() {
           </div>
 
           <ListGroup id="wd-assignments-list" className="rounded-0">
-            <ListGroupItem className="p-3 ps-1 border-0 border-start border-success border-4 d-flex align-items-center">
-              <BsGripVertical className="me-2 fs-3" />
-              <MdOutlineAssignment className="me-2 fs-3 text-success" />
-              <div className="ms-2">
-                <Link
-                  href="/courses/1234/assignments/123"
-                  className="text-decoration-none text-dark fw-bold"
+            {assignments
+              .filter((assignment) => assignment.course === cid)
+              .map((assignment) => (
+                <ListGroupItem
+                  key={assignment._id}
+                  className="p-3 ps-1 border-0 border-start border-success border-4 d-flex align-items-center"
                 >
-                  A1 - ENV + HTML
-                </Link>
-                <div className="mt-1">
-                  <span className="text-danger">Multiple Modules</span> |{" "}
-                  <strong>Not available until</strong> May 6 at 12:00am
-                  <br />
-                  <strong>Due</strong> May 13 at 11:59pm | 100 pts
-                </div>
-              </div>
-              <div className="ms-auto">
-                <GreenCheckmark />
-                <IoEllipsisVertical className="ms-1 fs-4" />
-              </div>
-            </ListGroupItem>
-
-            <ListGroupItem className="p-3 ps-1 border-0 border-start border-success border-4 d-flex align-items-center">
-              <BsGripVertical className="me-2 fs-3" />
-              <MdOutlineAssignment className="me-2 fs-3 text-success" />
-              <div className="ms-2">
-                <Link
-                  href="/courses/1234/assignments/124"
-                  className="text-decoration-none text-dark fw-bold"
-                >
-                  A2 - CSS + BOOTSTRAP
-                </Link>
-                <div className="mt-1">
-                  <span className="text-danger">Multiple Modules</span> |{" "}
-                  <strong>Not available until</strong> May 13 at 12:00am
-                  <br />
-                  <strong>Due</strong> May 20 at 11:59pm | 100 pts
-                </div>
-              </div>
-              <div className="ms-auto">
-                <GreenCheckmark />
-                <IoEllipsisVertical className="ms-1 fs-4" />
-              </div>
-            </ListGroupItem>
-
-            <ListGroupItem className="p-3 ps-1 border-0 border-start border-success border-4 d-flex align-items-center">
-              <BsGripVertical className="me-2 fs-3" />
-              <MdOutlineAssignment className="me-2 fs-3 text-success" />
-              <div className="ms-2">
-                <Link
-                  href="/courses/1234/assignments/125"
-                  className="text-decoration-none text-dark fw-bold"
-                >
-                  A3 - JAVASCRIPT + REACT
-                </Link>
-                <div className="mt-1">
-                  <span className="text-danger">Multiple Modules</span> |{" "}
-                  <strong>Not available until</strong> May 20 at 12:00am
-                  <br />
-                  <strong>Due</strong> May 27 at 11:59pm | 100 pts
-                </div>
-              </div>
-              <div className="ms-auto">
-                <GreenCheckmark />
-                <IoEllipsisVertical className="ms-1 fs-4" />
-              </div>
-            </ListGroupItem>
+                  <BsGripVertical className="me-2 fs-3" />
+                  <MdOutlineAssignment className="me-2 fs-3 text-success" />
+                  <div className="ms-2">
+                    <Link
+                      href={`/courses/${cid}/assignments/${assignment._id}`}
+                      className="text-decoration-none text-dark fw-bold"
+                    >
+                      {assignment.title}
+                    </Link>
+                    <div className="mt-1">
+                      <span className="text-danger">Multiple Modules</span> |{" "}
+                      <strong>Not available until</strong> May 6 at 12:00am
+                      <br />
+                      <strong>Due</strong> May 13 at 11:59pm | 100 pts
+                    </div>
+                  </div>
+                  <div className="ms-auto">
+                    <GreenCheckmark />
+                    <IoEllipsisVertical className="ms-1 fs-4" />
+                  </div>
+                </ListGroupItem>
+              ))}
           </ListGroup>
         </ListGroupItem>
       </ListGroup>
