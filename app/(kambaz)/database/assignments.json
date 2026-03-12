@@ -1,0 +1,102 @@
+[ 
+  {
+    "_id": "MESSAGE-FOR-TA's",
+    "title": "Message for TAs",
+    "description": "Descriptions created with the use of AI",
+    "course": "NONE",
+    "points": 10000000000,
+    "dueDate": "2024-05-13T23:59",
+    "availableDate": "2024-05-06T00:00",
+    "availableUntilDate": "2024-05-07T00:00"
+  }, 
+  {
+    "_id": "A101",
+    "title": "Propulsion Assignment",
+    "description": "Submit a research paper on rocket propulsion systems.",
+    "course": "RS101",
+    "points": 100,
+    "dueDate": "2024-05-13T23:59",
+    "availableDate": "2024-05-06T00:00",
+    "availableUntilDate": "2024-05-07T00:00"
+  },
+  {
+    "_id": "A102",
+    "title": "Combustion Analysis",
+    "description": "Analyze combustion processes in rocket engines using provided data.",
+    "course": "RS101",
+    "points": 100,
+    "dueDate": "2024-05-20T23:59",
+    "availableDate": "2024-05-13T00:00",
+    "availableUntilDate": "2024-05-14T00:00"
+  },
+  {
+    "_id": "A103",
+    "title": "Nozzle Design Project",
+    "description": "Design and simulate a rocket nozzle for optimal performance.",
+    "course": "RS101",
+    "points": 150,
+    "dueDate": "2024-05-27T23:59",
+    "availableDate": "2024-05-20T00:00",
+    "availableUntilDate": "2024-05-21T00:00"
+  },
+  {
+    "_id": "A201",
+    "title": "Aerodynamics Quiz",
+    "description": "Take an online quiz on aerodynamic principles and applications.",
+    "course": "RS102",
+    "points": 50,
+    "dueDate": "2024-05-15T23:59",
+    "availableDate": "2024-05-08T00:00",
+    "availableUntilDate": "2024-05-09T00:00"
+  },
+  {
+    "_id": "A202",
+    "title": "Flow Analysis",
+    "description": "Complete computational fluid dynamics analysis on provided models.",
+    "course": "RS102",
+    "points": 100,
+    "dueDate": "2024-05-22T23:59",
+    "availableDate": "2024-05-15T00:00",
+    "availableUntilDate": "2024-05-16T00:00"
+  },
+  {
+    "_id": "A203",
+    "title": "Heating Analysis",
+    "description": "Analyze aerodynamic heating effects on spacecraft surfaces.",
+    "course": "RS102",
+    "points": 100,
+    "dueDate": "2024-05-29T23:59",
+    "availableDate": "2024-05-22T00:00",
+    "availableUntilDate": "2024-05-23T00:00"
+  },
+  {
+    "_id": "A301",
+    "title": "Structural Design Task",
+    "description": "Design a spacecraft structure meeting specified load requirements.",
+    "course": "RS103",
+    "points": 120,
+    "dueDate": "2024-05-18T23:59",
+    "availableDate": "2024-05-11T00:00",
+    "availableUntilDate": "2024-05-12T00:00"
+  },
+  {
+    "_id": "A302",
+    "title": "Orbital Calculations",
+    "description": "Perform orbital mechanics calculations for mission planning.",
+    "course": "RS103",
+    "points": 100,
+    "dueDate": "2024-05-25T23:59",
+    "availableDate": "2024-05-18T00:00",
+    "availableUntilDate": "2024-05-19T00:00"  
+  },
+  {
+    "_id": "A303",
+    "title": "Systems Engineering Exam",
+    "description": "Comprehensive exam on spacecraft systems and subsystems engineering.",
+    "course": "RS103",
+    "points": 150,
+    "dueDate": "2024-06-01T23:59",
+    "availableDate": "2024-05-25T00:00",
+    "availableUntilDate": "2024-05-26T00:00"
+  }
+]

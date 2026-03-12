@@ -1,3 +1,4 @@
+"use client";
 import {
   Form,
   Row,
@@ -6,28 +7,37 @@ import {
   FormSelect,
   FormCheck,
   Button,
-  FormGroup,
   FormLabel,
 } from "react-bootstrap";
+import { useParams } from "next/navigation";
+import * as db from "../../../../database";
+import Link from "next/link";
 
 export default function AssignmentEditor() {
+  const { cid, aid } = useParams();
+  const assignment = db.assignments.find(
+    (assignment) => assignment._id === aid && assignment.course === cid,
+  );
   return (
     <div id="wd-assignments-editor">
       <Form>
         <FormLabel>Assignment Name</FormLabel>
-        <FormControl defaultValue="A1 - ENV + HTML" />
+        <FormControl defaultValue={assignment?.title || ""} />
         <br />
         <FormControl
           as="textarea"
           rows={6}
-          defaultValue="The assignment is available online. Submit a link to the landing page of your Web application running on Netlify."
+          defaultValue={assignment?.description || ""}
         />
         <Row className="mb-3">
           <FormLabel column sm={3} className="text-end">
             Points
           </FormLabel>
           <Col sm={9}>
-            <FormControl type="number" defaultValue={100} />
+            <FormControl
+              type="number"
+              defaultValue={assignment?.points || 100}
+            />
           </Col>
         </Row>
         <Row className="mb-3">
@@ -112,21 +122,27 @@ export default function AssignmentEditor() {
               <FormLabel className="fw-bold">Due</FormLabel>
               <FormControl
                 type="datetime-local"
-                defaultValue="2024-05-13T23:59"
+                defaultValue={assignment?.dueDate ? assignment.dueDate : ""}
               />
               <Row className="mb-3">
                 <Col>
                   <FormLabel className="fw-bold">Available from</FormLabel>
                   <FormControl
                     type="datetime-local"
-                    defaultValue="2024-05-06T00:00"
+                    defaultValue={
+                      assignment?.availableDate ? assignment.availableDate : ""
+                    }
                   />
                 </Col>
                 <Col>
                   <FormLabel className="fw-bold">Until</FormLabel>
                   <FormControl
                     type="datetime-local"
-                    defaultValue="2024-05-20T00:00"
+                    defaultValue={
+                      assignment?.availableUntilDate
+                        ? assignment.availableUntilDate
+                        : ""
+                    }
                   />
                 </Col>
               </Row>
@@ -137,12 +153,12 @@ export default function AssignmentEditor() {
         {/* Buttons */}
         <hr />
         <div className="d-flex justify-content-end">
-          <Button variant="secondary" className="me-2" id="wd-cancel">
-            Cancel
-          </Button>
-          <Button variant="danger" id="wd-save">
-            Save
-          </Button>
+            <Link href={`/courses/${cid}/assignments`} className="btn btn-secondary me-2" id="wd-cancel">
+              Cancel
+            </Link>
+            <Link href={`/courses/${cid}/assignments`} className="btn btn-danger" id="wd-save">
+              Save
+            </Link>
         </div>
       </Form>
     </div>
