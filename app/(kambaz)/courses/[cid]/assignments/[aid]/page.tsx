@@ -10,22 +10,10 @@ import {
   FormLabel,
 } from "react-bootstrap";
 import { useParams, useRouter } from "next/navigation";
-import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addAssignment, updateAssignment } from "../../../assignments/reducer";
 import { RootState } from "../../../../store";
-
-type AssignmentForm = {
-  _id?: string;
-  title: string;
-  description: string;
-  course: string;
-  points: number;
-  dueDate: string;
-  availableDate: string;
-  availableUntilDate: string;
-};
 
 export default function AssignmentEditor() {
   const params = useParams();
@@ -39,23 +27,11 @@ export default function AssignmentEditor() {
     (state: RootState) => state.assignmentsReducer,
   );
 
-  const assignment = assignments.find(
-    (a: any) => a._id === aid && a.course === cid,
-  );
+  const assignment = assignments.find((a) => a._id === aid && a.course === cid);
 
-  const [formData, setFormData] = useState<AssignmentForm>({
-    title: "",
-    description: "",
-    course: cid,
-    points: 100,
-    dueDate: "",
-    availableDate: "",
-    availableUntilDate: "",
-  });
-
-  useEffect(() => {
+  const [formData, setFormData] = useState(() => {
     if (!isNewAssignment && assignment) {
-      setFormData({
+      return {
         _id: assignment._id,
         title: assignment.title,
         description: assignment.description,
@@ -64,12 +40,18 @@ export default function AssignmentEditor() {
         dueDate: assignment.dueDate,
         availableDate: assignment.availableDate,
         availableUntilDate: assignment.availableUntilDate,
-      });
+      };
     }
-    if (isNewAssignment) {
-      setFormData((prev) => ({ ...prev, course: cid }));
-    }
-  }, [assignment, cid, isNewAssignment]);
+    return {
+      title: "",
+      description: "",
+      course: cid,
+      points: 100,
+      dueDate: "",
+      availableDate: "",
+      availableUntilDate: "",
+    };
+  });
 
   const saveAssignment = () => {
     if (isNewAssignment) {
@@ -209,7 +191,10 @@ export default function AssignmentEditor() {
                     type="datetime-local"
                     value={formData.availableDate}
                     onChange={(e) =>
-                      setFormData({ ...formData, availableDate: e.target.value })
+                      setFormData({
+                        ...formData,
+                        availableDate: e.target.value,
+                      })
                     }
                   />
                 </Col>
@@ -235,6 +220,7 @@ export default function AssignmentEditor() {
         <hr />
         <div className="d-flex justify-content-end">
           <Button
+            type="button"
             variant="secondary"
             className="me-2"
             id="wd-cancel"
@@ -242,7 +228,12 @@ export default function AssignmentEditor() {
           >
             Cancel
           </Button>
-          <Button variant="danger" id="wd-save" onClick={saveAssignment}>
+          <Button
+            type="button"
+            variant="danger"
+            id="wd-save"
+            onClick={saveAssignment}
+          >
             Save
           </Button>
         </div>

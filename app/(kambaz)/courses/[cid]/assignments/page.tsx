@@ -4,16 +4,18 @@ import { ListGroup, ListGroupItem, Button, FormControl } from "react-bootstrap";
 import { BsGripVertical } from "react-icons/bs";
 import { FaPlus } from "react-icons/fa6";
 import { IoEllipsisVertical } from "react-icons/io5";
-import { FaSearch } from "react-icons/fa";
+import { FaSearch, FaTrash } from "react-icons/fa";
 import { MdOutlineAssignment } from "react-icons/md";
 import GreenCheckmark from "./GreenCheckmark";
 import { useParams } from "next/navigation";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../store";
+import { deleteAssignment } from "../../assignments/reducer";
 
 export default function Assignments() {
   const params = useParams();
   const cid = Array.isArray(params.cid) ? params.cid[0] : (params.cid ?? "");
+  const dispatch = useDispatch();
   const { assignments } = useSelector(
     (state: RootState) => state.assignmentsReducer,
   );
@@ -82,12 +84,26 @@ export default function Assignments() {
                     </Link>
                     <div className="mt-1">
                       <span className="text-danger">Multiple Modules</span> |{" "}
-                      <strong>Not available until</strong> May 6 at 12:00am
+                      <strong>Not available until</strong>{" "}
+                      {assignment.availableUntilDate}
                       <br />
-                      <strong>Due</strong> May 13 at 11:59pm | 100 pts
+                      <strong>Due</strong> {assignment.dueDate} |{" "}
+                      {assignment.points} pts
                     </div>
                   </div>
                   <div className="ms-auto">
+                    <FaTrash
+                      className="text-danger me-3"
+                      onClick={() => {
+                        if (
+                          window.confirm(
+                            "Are you sure you want to remove this assignment?",
+                          )
+                        ) {
+                          dispatch(deleteAssignment(assignment._id));
+                        }
+                      }}
+                    />
                     <GreenCheckmark />
                     <IoEllipsisVertical className="ms-1 fs-4" />
                   </div>
