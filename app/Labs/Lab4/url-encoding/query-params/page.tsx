@@ -1,8 +1,21 @@
 "use client";
+/*
+AI USE DISCLOSURE
+AI told me to use suspense
 
+I was getting a build errors with this file but compared with the doc and it approved
+This doesn't change any of the other functionality and this function isn't even used.
+
+
+Best,
+Reese
+
+*/
+
+import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 
-export default function QueryCalculator() {
+function QueryCalculatorContent() {
   const searchParams = useSearchParams();
 
   const aRaw = searchParams.get("a") || "0";
@@ -24,5 +37,15 @@ export default function QueryCalculator() {
       </p>
       <h2 style={{ color: "green" }}>Sum = {sum}</h2>
     </div>
+  );
+}
+
+export default function QueryCalculator() {
+  return (
+    <Suspense
+      fallback={<div style={{ padding: 40 }}>Loading calculator...</div>}
+    >
+      <QueryCalculatorContent />
+    </Suspense>
   );
 }
