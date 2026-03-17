@@ -20,22 +20,24 @@ export default function Lab4() {
   }
   return (
     <Provider store={store}>
-        <div>
-          <h2> Lab 4</h2>
-          <ClickEvent />
-          <PassingDataOnEvent />
-          <PassingFunctions theFunction={sayHello} />
-          <Counter />
-          <BooleanStateVariables />
-          <StringStateVariables />
-          <DateStateVariable />
-          <ObjectStateVariable />
-          <ArrayStateVariable />
-          <ParentStateComponent />
-          {/* <Link href="Lab4/redux">Redux Examples</Link> */}
-          <ReduxExamples />
-          <Link href="./Lab4/react-context">React Context Examples</Link>
-        </div>
+      <div>
+        <h2> Lab 4</h2>
+        <ClickEvent />
+        <PassingDataOnEvent />
+        <PassingFunctions theFunction={sayHello} />
+        <Counter />
+        <BooleanStateVariables />
+        <StringStateVariables />
+        <DateStateVariable />
+        <ObjectStateVariable />
+        <ArrayStateVariable />
+        <ParentStateComponent />
+        {/* <Link href="Lab4/redux">Redux Examples</Link> */}
+        <ReduxExamples />
+        <Link href="./Lab4/react-context">React Context Examples</Link>
+        <hr />
+        <Link href="./Lab4/zustand">Zustand Examples</Link>
+      </div>
     </Provider>
   );
 }
