@@ -34,6 +34,7 @@ export default function Lab4() {
           <ParentStateComponent />
           {/* <Link href="Lab4/redux">Redux Examples</Link> */}
           <ReduxExamples />
+          <Link href="./Lab4/react-context">React Context Examples</Link>
         </div>
     </Provider>
   );
