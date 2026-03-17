@@ -7,11 +7,17 @@ import { IoEllipsisVertical } from "react-icons/io5";
 import { FaSearch } from "react-icons/fa";
 import { MdOutlineAssignment } from "react-icons/md";
 import GreenCheckmark from "./GreenCheckmark";
-import * as db from "../../../database";
 import { useParams } from "next/navigation";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../store";
+
 export default function Assignments() {
-  const { cid } = useParams();
-  const assignments = db.assignments;
+  const params = useParams();
+  const cid = Array.isArray(params.cid) ? params.cid[0] : (params.cid ?? "");
+  const { assignments } = useSelector(
+    (state: RootState) => state.assignmentsReducer,
+  );
+
   return (
     <div id="wd-assignments">
       <div className="d-flex justify-content-between align-items-center mb-4">
@@ -31,9 +37,13 @@ export default function Assignments() {
           >
             <FaPlus className="me-1" /> Group
           </Button>
-          <Button id="wd-add-assignment" variant="danger">
+          <Link
+            id="wd-add-assignment"
+            href={`/courses/${cid}/assignments/new`}
+            className="btn btn-danger"
+          >
             <FaPlus className="me-1" /> Assignment
-          </Button>
+          </Link>
         </div>
       </div>
 
@@ -59,7 +69,7 @@ export default function Assignments() {
               .map((assignment) => (
                 <ListGroupItem
                   key={assignment._id}
-                  className="p-3 ps-1 border-0 border-start border-success border-4 d-flex align-items-center"
+                  className="p-3 ps-1 border-start border-success border-4 d-flex align-items-center"
                 >
                   <BsGripVertical className="me-2 fs-3" />
                   <MdOutlineAssignment className="me-2 fs-3 text-success" />

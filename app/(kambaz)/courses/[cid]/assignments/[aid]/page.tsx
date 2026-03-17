@@ -9,25 +9,97 @@ import {
   Button,
   FormLabel,
 } from "react-bootstrap";
-import { useParams } from "next/navigation";
-import * as db from "../../../../database";
+import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { addAssignment, updateAssignment } from "../../../assignments/reducer";
+import { RootState } from "../../../../store";
+
+type AssignmentForm = {
+  _id?: string;
+  title: string;
+  description: string;
+  course: string;
+  points: number;
+  dueDate: string;
+  availableDate: string;
+  availableUntilDate: string;
+};
 
 export default function AssignmentEditor() {
-  const { cid, aid } = useParams();
-  const assignment = db.assignments.find(
-    (assignment) => assignment._id === aid && assignment.course === cid,
+  const params = useParams();
+  const router = useRouter();
+  const dispatch = useDispatch();
+  const cid = Array.isArray(params.cid) ? params.cid[0] : (params.cid ?? "");
+  const aid = Array.isArray(params.aid) ? params.aid[0] : (params.aid ?? "");
+  const isNewAssignment = aid === "new";
+
+  const { assignments } = useSelector(
+    (state: RootState) => state.assignmentsReducer,
   );
+
+  const assignment = assignments.find(
+    (a: any) => a._id === aid && a.course === cid,
+  );
+
+  const [formData, setFormData] = useState<AssignmentForm>({
+    title: "",
+    description: "",
+    course: cid,
+    points: 100,
+    dueDate: "",
+    availableDate: "",
+    availableUntilDate: "",
+  });
+
+  useEffect(() => {
+    if (!isNewAssignment && assignment) {
+      setFormData({
+        _id: assignment._id,
+        title: assignment.title,
+        description: assignment.description,
+        course: assignment.course,
+        points: assignment.points,
+        dueDate: assignment.dueDate,
+        availableDate: assignment.availableDate,
+        availableUntilDate: assignment.availableUntilDate,
+      });
+    }
+    if (isNewAssignment) {
+      setFormData((prev) => ({ ...prev, course: cid }));
+    }
+  }, [assignment, cid, isNewAssignment]);
+
+  const saveAssignment = () => {
+    if (isNewAssignment) {
+      dispatch(addAssignment(formData));
+    } else {
+      dispatch(updateAssignment(formData));
+    }
+    router.push(`/courses/${cid}/assignments`);
+  };
+
+  const cancel = () => {
+    router.push(`/courses/${cid}/assignments`);
+  };
+
   return (
     <div id="wd-assignments-editor">
       <Form>
         <FormLabel>Assignment Name</FormLabel>
-        <FormControl defaultValue={assignment?.title || ""} />
+        <FormControl
+          value={formData.title}
+          onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+        />
         <br />
         <FormControl
           as="textarea"
           rows={6}
-          defaultValue={assignment?.description || ""}
+          value={formData.description}
+          onChange={(e) =>
+            setFormData({ ...formData, description: e.target.value })
+          }
         />
         <Row className="mb-3">
           <FormLabel column sm={3} className="text-end">
@@ -36,7 +108,10 @@ export default function AssignmentEditor() {
           <Col sm={9}>
             <FormControl
               type="number"
-              defaultValue={assignment?.points || 100}
+              value={formData.points}
+              onChange={(e) =>
+                setFormData({ ...formData, points: Number(e.target.value) })
+              }
             />
           </Col>
         </Row>
@@ -122,15 +197,19 @@ export default function AssignmentEditor() {
               <FormLabel className="fw-bold">Due</FormLabel>
               <FormControl
                 type="datetime-local"
-                defaultValue={assignment?.dueDate ? assignment.dueDate : ""}
+                value={formData.dueDate}
+                onChange={(e) =>
+                  setFormData({ ...formData, dueDate: e.target.value })
+                }
               />
               <Row className="mb-3">
                 <Col>
                   <FormLabel className="fw-bold">Available from</FormLabel>
                   <FormControl
                     type="datetime-local"
-                    defaultValue={
-                      assignment?.availableDate ? assignment.availableDate : ""
+                    value={formData.availableDate}
+                    onChange={(e) =>
+                      setFormData({ ...formData, availableDate: e.target.value })
                     }
                   />
                 </Col>
@@ -138,10 +217,12 @@ export default function AssignmentEditor() {
                   <FormLabel className="fw-bold">Until</FormLabel>
                   <FormControl
                     type="datetime-local"
-                    defaultValue={
-                      assignment?.availableUntilDate
-                        ? assignment.availableUntilDate
-                        : ""
+                    value={formData.availableUntilDate}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        availableUntilDate: e.target.value,
+                      })
                     }
                   />
                 </Col>
@@ -153,12 +234,17 @@ export default function AssignmentEditor() {
         {/* Buttons */}
         <hr />
         <div className="d-flex justify-content-end">
-            <Link href={`/courses/${cid}/assignments`} className="btn btn-secondary me-2" id="wd-cancel">
-              Cancel
-            </Link>
-            <Link href={`/courses/${cid}/assignments`} className="btn btn-danger" id="wd-save">
-              Save
-            </Link>
+          <Button
+            variant="secondary"
+            className="me-2"
+            id="wd-cancel"
+            onClick={cancel}
+          >
+            Cancel
+          </Button>
+          <Button variant="danger" id="wd-save" onClick={saveAssignment}>
+            Save
+          </Button>
         </div>
       </Form>
     </div>
