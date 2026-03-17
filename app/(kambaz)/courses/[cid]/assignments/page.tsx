@@ -10,12 +10,17 @@ import GreenCheckmark from "./GreenCheckmark";
 import { useParams } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../store";
-import { deleteAssignment } from "../../assignments/reducer";
+import { deleteAssignment } from "./reducer";
 
 export default function Assignments() {
   const params = useParams();
   const cid = Array.isArray(params.cid) ? params.cid[0] : (params.cid ?? "");
   const dispatch = useDispatch();
+  const { currentUser } = useSelector(
+    (state: RootState) =>
+      state.accountReducer as { currentUser: { role?: string } | null },
+  );
+  const canEdit = currentUser?.role === "FACULTY";
   const { assignments } = useSelector(
     (state: RootState) => state.assignmentsReducer,
   );
@@ -39,13 +44,15 @@ export default function Assignments() {
           >
             <FaPlus className="me-1" /> Group
           </Button>
-          <Link
-            id="wd-add-assignment"
-            href={`/courses/${cid}/assignments/new`}
-            className="btn btn-danger"
-          >
-            <FaPlus className="me-1" /> Assignment
-          </Link>
+          {canEdit && (
+            <Link
+              id="wd-add-assignment"
+              href={`/courses/${cid}/assignments/new`}
+              className="btn btn-danger"
+            >
+              <FaPlus className="me-1" /> Assignment
+            </Link>
+          )}
         </div>
       </div>
 
@@ -92,18 +99,20 @@ export default function Assignments() {
                     </div>
                   </div>
                   <div className="ms-auto">
-                    <FaTrash
-                      className="text-danger me-3"
-                      onClick={() => {
-                        if (
-                          window.confirm(
-                            "Are you sure you want to remove this assignment?",
-                          )
-                        ) {
-                          dispatch(deleteAssignment(assignment._id));
-                        }
-                      }}
-                    />
+                    {canEdit && (
+                      <FaTrash
+                        className="text-danger me-3"
+                        onClick={() => {
+                          if (
+                            window.confirm(
+                              "Are you sure you want to remove this assignment?",
+                            )
+                          ) {
+                            dispatch(deleteAssignment(assignment._id));
+                          }
+                        }}
+                      />
+                    )}
                     <GreenCheckmark />
                     <IoEllipsisVertical className="ms-1 fs-4" />
                   </div>

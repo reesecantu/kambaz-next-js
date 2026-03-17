@@ -12,7 +12,7 @@ import {
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addAssignment, updateAssignment } from "../../../assignments/reducer";
+import { addAssignment, updateAssignment } from "../../assignments/reducer";
 import { RootState } from "../../../../store";
 
 export default function AssignmentEditor() {
@@ -26,6 +26,11 @@ export default function AssignmentEditor() {
   const { assignments } = useSelector(
     (state: RootState) => state.assignmentsReducer,
   );
+  const { currentUser } = useSelector(
+    (state: RootState) =>
+      state.accountReducer as { currentUser: { role?: string } | null },
+  );
+  const canEdit = currentUser?.role === "FACULTY";
 
   const assignment = assignments.find((a) => a._id === aid && a.course === cid);
 
@@ -54,6 +59,10 @@ export default function AssignmentEditor() {
   });
 
   const saveAssignment = () => {
+    if (!canEdit) {
+      router.push(`/courses/${cid}/assignments`);
+      return;
+    }
     if (isNewAssignment) {
       dispatch(addAssignment(formData));
     } else {
@@ -72,6 +81,7 @@ export default function AssignmentEditor() {
         <FormLabel>Assignment Name</FormLabel>
         <FormControl
           value={formData.title}
+          readOnly={!canEdit}
           onChange={(e) => setFormData({ ...formData, title: e.target.value })}
         />
         <br />
@@ -79,6 +89,7 @@ export default function AssignmentEditor() {
           as="textarea"
           rows={6}
           value={formData.description}
+          readOnly={!canEdit}
           onChange={(e) =>
             setFormData({ ...formData, description: e.target.value })
           }
@@ -91,6 +102,7 @@ export default function AssignmentEditor() {
             <FormControl
               type="number"
               value={formData.points}
+              readOnly={!canEdit}
               onChange={(e) =>
                 setFormData({ ...formData, points: Number(e.target.value) })
               }
@@ -102,7 +114,7 @@ export default function AssignmentEditor() {
             Assignment Group
           </FormLabel>
           <Col sm={9}>
-            <FormSelect defaultValue="ASSIGNMENTS">
+            <FormSelect defaultValue="ASSIGNMENTS" disabled={!canEdit}>
               <option value="ASSIGNMENTS">ASSIGNMENTS</option>
               <option value="NOT-ASSIGNMENTS">NOT ASSIGNMENTS</option>
               <option value="MAYBE-ASSIGNMENTS">MAYBE ASSIGNMENTS</option>
@@ -114,7 +126,7 @@ export default function AssignmentEditor() {
             Display Grade as
           </FormLabel>
           <Col sm={9}>
-            <FormSelect defaultValue="PERCENT">
+            <FormSelect defaultValue="PERCENT" disabled={!canEdit}>
               <option value="PERCENT">Percentage</option>
               <option value="POINTS-TOTAL">Points Total</option>
               <option value="HIDE-GRADE">Hide Grades</option>
@@ -128,7 +140,11 @@ export default function AssignmentEditor() {
           </FormLabel>
           <Col sm={9}>
             <div className="border rounded p-3">
-              <FormSelect defaultValue="ONLINE" className="mb-3">
+              <FormSelect
+                defaultValue="ONLINE"
+                className="mb-3"
+                disabled={!canEdit}
+              >
                 <option value="ONLINE">Online</option>
                 <option value="IN-CLASS">In Class</option>
                 <option value="BY-MAIL">By Mail</option>
@@ -139,30 +155,35 @@ export default function AssignmentEditor() {
                 id="wd-chkbox-text-entry"
                 label="Text Entry"
                 name="online-entry-option"
+                disabled={!canEdit}
               />
               <FormCheck
                 type="checkbox"
                 id="wd-chkbox-website-url"
                 label="Website URL"
                 name="online-entry-option"
+                disabled={!canEdit}
               />
               <FormCheck
                 type="checkbox"
                 id="wd-chkbox-media-recordings"
                 label="Media Recordings"
                 name="online-entry-option"
+                disabled={!canEdit}
               />
               <FormCheck
                 type="checkbox"
                 id="wd-chkbox-student-annotation"
                 label="Student Annotation"
                 name="online-entry-option"
+                disabled={!canEdit}
               />
               <FormCheck
                 type="checkbox"
                 id="wd-chkbox-file-upload"
                 label="File Upload"
                 name="online-entry-option"
+                disabled={!canEdit}
               />
             </div>
           </Col>
@@ -175,11 +196,12 @@ export default function AssignmentEditor() {
           <Col sm={9}>
             <div className="border rounded p-3">
               <FormLabel className="fw-bold">Assign to</FormLabel>
-              <FormControl defaultValue="Everyone" />
+              <FormControl defaultValue="Everyone" readOnly={!canEdit} />
               <FormLabel className="fw-bold">Due</FormLabel>
               <FormControl
                 type="datetime-local"
                 value={formData.dueDate}
+                readOnly={!canEdit}
                 onChange={(e) =>
                   setFormData({ ...formData, dueDate: e.target.value })
                 }
@@ -190,6 +212,7 @@ export default function AssignmentEditor() {
                   <FormControl
                     type="datetime-local"
                     value={formData.availableDate}
+                    readOnly={!canEdit}
                     onChange={(e) =>
                       setFormData({
                         ...formData,
@@ -203,6 +226,7 @@ export default function AssignmentEditor() {
                   <FormControl
                     type="datetime-local"
                     value={formData.availableUntilDate}
+                    readOnly={!canEdit}
                     onChange={(e) =>
                       setFormData({
                         ...formData,
@@ -228,14 +252,16 @@ export default function AssignmentEditor() {
           >
             Cancel
           </Button>
-          <Button
-            type="button"
-            variant="danger"
-            id="wd-save"
-            onClick={saveAssignment}
-          >
-            Save
-          </Button>
+          {canEdit && (
+            <Button
+              type="button"
+              variant="danger"
+              id="wd-save"
+              onClick={saveAssignment}
+            >
+              Save
+            </Button>
+          )}
         </div>
       </Form>
     </div>

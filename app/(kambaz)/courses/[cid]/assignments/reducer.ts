@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createSlice } from "@reduxjs/toolkit";
-import { assignments } from "../../database";
+import { assignments } from "../../../database";
 import { v4 as uuidv4 } from "uuid";
 
 const initialState = {
