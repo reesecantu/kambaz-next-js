@@ -4,14 +4,27 @@ import { ListGroup, ListGroupItem, Button, FormControl } from "react-bootstrap";
 import { BsGripVertical } from "react-icons/bs";
 import { FaPlus } from "react-icons/fa6";
 import { IoEllipsisVertical } from "react-icons/io5";
-import { FaSearch } from "react-icons/fa";
+import { FaSearch, FaTrash } from "react-icons/fa";
 import { MdOutlineAssignment } from "react-icons/md";
 import GreenCheckmark from "./GreenCheckmark";
-import * as db from "../../../database";
 import { useParams } from "next/navigation";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../../store";
+import { deleteAssignment } from "./reducer";
+
 export default function Assignments() {
-  const { cid } = useParams();
-  const assignments = db.assignments;
+  const params = useParams();
+  const cid = Array.isArray(params.cid) ? params.cid[0] : (params.cid ?? "");
+  const dispatch = useDispatch();
+  const { currentUser } = useSelector(
+    (state: RootState) =>
+      state.accountReducer as { currentUser: { role?: string } | null },
+  );
+  const canEdit = currentUser?.role === "FACULTY";
+  const { assignments } = useSelector(
+    (state: RootState) => state.assignmentsReducer,
+  );
+
   return (
     <div id="wd-assignments">
       <div className="d-flex justify-content-between align-items-center mb-4">
@@ -31,9 +44,15 @@ export default function Assignments() {
           >
             <FaPlus className="me-1" /> Group
           </Button>
-          <Button id="wd-add-assignment" variant="danger">
-            <FaPlus className="me-1" /> Assignment
-          </Button>
+          {canEdit && (
+            <Link
+              id="wd-add-assignment"
+              href={`/courses/${cid}/assignments/new`}
+              className="btn btn-danger"
+            >
+              <FaPlus className="me-1" /> Assignment
+            </Link>
+          )}
         </div>
       </div>
 
@@ -59,7 +78,7 @@ export default function Assignments() {
               .map((assignment) => (
                 <ListGroupItem
                   key={assignment._id}
-                  className="p-3 ps-1 border-0 border-start border-success border-4 d-flex align-items-center"
+                  className="p-3 ps-1 border-start border-success border-4 d-flex align-items-center"
                 >
                   <BsGripVertical className="me-2 fs-3" />
                   <MdOutlineAssignment className="me-2 fs-3 text-success" />
@@ -72,12 +91,28 @@ export default function Assignments() {
                     </Link>
                     <div className="mt-1">
                       <span className="text-danger">Multiple Modules</span> |{" "}
-                      <strong>Not available until</strong> May 6 at 12:00am
+                      <strong>Not available until</strong>{" "}
+                      {assignment.availableUntilDate}
                       <br />
-                      <strong>Due</strong> May 13 at 11:59pm | 100 pts
+                      <strong>Due</strong> {assignment.dueDate} |{" "}
+                      {assignment.points} pts
                     </div>
                   </div>
                   <div className="ms-auto">
+                    {canEdit && (
+                      <FaTrash
+                        className="text-danger me-3"
+                        onClick={() => {
+                          if (
+                            window.confirm(
+                              "Are you sure you want to remove this assignment?",
+                            )
+                          ) {
+                            dispatch(deleteAssignment(assignment._id));
+                          }
+                        }}
+                      />
+                    )}
                     <GreenCheckmark />
                     <IoEllipsisVertical className="ms-1 fs-4" />
                   </div>
