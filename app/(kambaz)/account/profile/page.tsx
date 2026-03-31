@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { setCurrentUser } from "../reducer";
 import { RootState } from "../../store";
 import { Button, FormControl } from "react-bootstrap";
+import * as client from "../client";
 export default function Profile() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [profile, setProfile] = useState<any>({});
@@ -16,7 +17,12 @@ export default function Profile() {
     if (!currentUser) return redirect("/account/signin");
     setProfile(currentUser);
   };
-  const signout = () => {
+  const updateProfile = async () => {
+    const updatedProfile = await client.updateUser(profile);
+    dispatch(setCurrentUser(updatedProfile));
+  };
+  const signout = async () => {
+    await client.signout();
     dispatch(setCurrentUser(null));
     redirect("/account/signin");
   };
@@ -84,7 +90,10 @@ export default function Profile() {
             <option value="FACULTY">Faculty</option>{" "}
             <option value="STUDENT">Student</option>
           </select>
-          <Button onClick={signout} className="w-100 mb-2" id="wd-signout-btn">
+          <Button onClick={updateProfile} className="btn btn-primary w-100 mb-2" id="wd-update-btn">
+            Update
+          </Button>
+          <Button onClick={signout} className="wd-signout-btn btn btn-danger w-100" id="wd-signout-btn">
             Sign out
           </Button>
         </div>
