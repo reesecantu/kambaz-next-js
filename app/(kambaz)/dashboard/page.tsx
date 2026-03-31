@@ -12,11 +12,12 @@ import {
   Button,
   FormControl,
 } from "react-bootstrap";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addNewCourse, deleteCourse, updateCourse } from "../courses/reducer";
+import { setCourses } from "../courses/reducer";
 import { enroll, unenroll } from "../enrollments/reducer";
 import { RootState } from "../store";
+import * as client from "../courses/client";
 
 export interface User {
   _id: string;
@@ -52,7 +53,35 @@ export default function Dashboard() {
   const { currentUser } = useSelector(
     (state: RootState) => state.accountReducer as { currentUser: User | null },
   );
-  const canEditCourses = currentUser?.role === "FACULTY";
+  const canEditCourses =
+    currentUser?.role === "FACULTY" || currentUser?.role === "ADMIN";
+
+  const fetchCourses = async () => {
+    try {
+      const myCourses = await client.findMyCourses();
+      dispatch(setCourses(myCourses));
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  useEffect(() => {
+    fetchCourses();
+  }, [currentUser]);
+
+  const onAddNewCourse = async () => {
+    const newCourse = await client.createCourse(course);
+    dispatch(setCourses([...courses, newCourse]));
+  };
+  const onDeleteCourse = async (courseId: string) => {
+    await client.deleteCourse(courseId);
+    dispatch(setCourses(courses.filter((c: any) => c._id !== courseId)));
+  };
+  const onUpdateCourse = async () => {
+    await client.updateCourse(course);
+    dispatch(
+      setCourses(courses.map((c: any) => (c._id === course._id ? course : c))),
+    );
+  };
 
   const enrolledCourses = courses.filter(
     (course) =>
@@ -85,7 +114,7 @@ export default function Dashboard() {
           <button
             className="btn btn-primary float-end"
             id="wd-add-new-course-click"
-            onClick={() => dispatch(addNewCourse(course))}
+            onClick={onAddNewCourse}
           >
             {" "}
             Add{" "}
@@ -94,7 +123,7 @@ export default function Dashboard() {
         {canEditCourses && (
           <button
             className="btn btn-warning float-end me-2"
-            onClick={() => dispatch(updateCourse(course))}
+            onClick={onUpdateCourse}
             id="wd-update-course-click"
           >
             Update{" "}
@@ -200,7 +229,7 @@ export default function Dashboard() {
                         <button
                           onClick={(event) => {
                             event.preventDefault();
-                            dispatch(deleteCourse(course._id));
+                            onDeleteCourse(course._id);
                           }}
                           className="btn btn-danger float-end"
                           id="wd-delete-course-click"
