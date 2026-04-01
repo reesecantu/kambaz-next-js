@@ -14,6 +14,7 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addAssignment, updateAssignment } from "../../assignments/reducer";
 import { RootState } from "../../../../store";
+import * as client from "../../../client";
 
 export default function AssignmentEditor() {
   const params = useParams();
@@ -58,15 +59,17 @@ export default function AssignmentEditor() {
     };
   });
 
-  const saveAssignment = () => {
+  const saveAssignment = async () => {
     if (!canEdit) {
       router.push(`/courses/${cid}/assignments`);
       return;
     }
     if (isNewAssignment) {
-      dispatch(addAssignment(formData));
+      const newAssignment = await client.createAssignmentForCourse(cid, formData);
+      dispatch(addAssignment(newAssignment));
     } else {
-      dispatch(updateAssignment(formData));
+      const updated = await client.updateAssignment(formData);
+      dispatch(updateAssignment(updated));
     }
     router.push(`/courses/${cid}/assignments`);
   };

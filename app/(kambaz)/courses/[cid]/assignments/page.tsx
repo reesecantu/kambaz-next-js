@@ -9,8 +9,10 @@ import { MdOutlineAssignment } from "react-icons/md";
 import GreenCheckmark from "./GreenCheckmark";
 import { useParams } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
 import { RootState } from "../../../store";
-import { deleteAssignment } from "./reducer";
+import { deleteAssignment as deleteAssignmentAction, setAssignments } from "./reducer";
+import * as client from "../../client";
 
 export default function Assignments() {
   const params = useParams();
@@ -24,6 +26,19 @@ export default function Assignments() {
   const { assignments } = useSelector(
     (state: RootState) => state.assignmentsReducer,
   );
+
+  const fetchAssignments = async () => {
+    const data = await client.findAssignmentsForCourse(cid);
+    dispatch(setAssignments(data));
+  };
+  useEffect(() => {
+    fetchAssignments();
+  }, []);
+
+  const removeAssignment = async (assignmentId: string) => {
+    await client.deleteAssignment(assignmentId);
+    dispatch(deleteAssignmentAction(assignmentId));
+  };
 
   return (
     <div id="wd-assignments">
@@ -108,7 +123,7 @@ export default function Assignments() {
                               "Are you sure you want to remove this assignment?",
                             )
                           ) {
-                            dispatch(deleteAssignment(assignment._id));
+                            removeAssignment(assignment._id);
                           }
                         }}
                       />
