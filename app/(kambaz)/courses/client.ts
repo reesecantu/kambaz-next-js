@@ -73,3 +73,18 @@ export const updateAssignment = async (assignment: any) => {
   const { data } = await axios.put(`${ASSIGNMENTS_API}/${assignment._id}`, assignment);
   return data;
 };
+
+export const fetchEnrollments = async () => {
+  const { data } = await axiosWithCredentials.get(`${USERS_API}/current/enrollments`);
+  return data;
+};
+
+export const enrollInCourse = async (courseId: string) => {
+  const { data } = await axiosWithCredentials.put(`${USERS_API}/current/courses/${courseId}`);
+  return data;
+};
+
+export const unenrollFromCourse = async (courseId: string) => {
+  const { data } = await axiosWithCredentials.delete(`${USERS_API}/current/courses/${courseId}`);
+  return data;
+};

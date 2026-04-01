@@ -15,7 +15,7 @@ import {
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setCourses } from "../courses/reducer";
-import { enroll, unenroll } from "../enrollments/reducer";
+import { enroll, unenroll, setEnrollments } from "../enrollments/reducer";
 import { RootState } from "../store";
 import * as client from "../courses/client";
 
@@ -58,15 +58,17 @@ export default function Dashboard() {
 
   const fetchCourses = async () => {
     try {
-      const myCourses = await client.findMyCourses();
-      dispatch(setCourses(myCourses));
+      const allCourses = await client.fetchAllCourses();
+      dispatch(setCourses(allCourses));
+      const userEnrollments = await client.fetchEnrollments();
+      dispatch(setEnrollments(userEnrollments));
     } catch (error) {
       console.error(error);
     }
   };
   useEffect(() => {
     fetchCourses();
-  }, [currentUser]);
+  }, [currentUser]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const onAddNewCourse = async () => {
     const newCourse = await client.createCourse(course);
@@ -195,8 +197,9 @@ export default function Dashboard() {
                         <button
                           className="btn btn-danger me-2 float-end"
                           id={`wd-unenroll-${course._id}`}
-                          onClick={(event) => {
+                          onClick={async (event) => {
                             event.preventDefault();
+                            await client.unenrollFromCourse(course._id);
                             dispatch(
                               unenroll({
                                 userId: currentUser._id,
@@ -212,8 +215,9 @@ export default function Dashboard() {
                         <button
                           className="btn btn-success me-2 float-end"
                           id={`wd-enroll-${course._id}`}
-                          onClick={(event) => {
+                          onClick={async (event) => {
                             event.preventDefault();
+                            await client.enrollInCourse(course._id);
                             dispatch(
                               enroll({
                                 userId: currentUser._id,
