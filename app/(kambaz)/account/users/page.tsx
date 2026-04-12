@@ -1,4 +1,3 @@
-
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { useState, useEffect } from "react";
@@ -6,6 +5,7 @@ import { useParams } from "next/navigation";
 import { FormControl } from "react-bootstrap";
 import PeopleTable from "../../courses/[cid]/people/table/page";
 import * as client from "../client";
+import { FaPlus } from "react-icons/fa6";
 export default function Users() {
   const [users, setUsers] = useState<any[]>([]);
   const [role, setRole] = useState("");
@@ -28,6 +28,18 @@ export default function Users() {
       fetchUsers();
     }
   };
+  const createUser = async () => {
+    const user = await client.createUser({
+      firstName: "New",
+      lastName: `User${users.length + 1}`,
+      username: `newuser${Date.now()}`,
+      password: "password123",
+      email: `email${users.length + 1}@neu.edu`,
+      section: "S101",
+      role: "STUDENT",
+    });
+    setUsers([...users, user]);
+  };
 
   const { uid } = useParams();
   const fetchUsers = async () => {
@@ -39,6 +51,13 @@ export default function Users() {
   }, [uid]);
   return (
     <div>
+      <button
+        onClick={createUser}
+        className="float-end btn btn-danger wd-add-people"
+      >
+        <FaPlus className="me-2" />
+        Users
+      </button>
       <h3>Users</h3>
       <FormControl
         onChange={(e) => filterUsersByName(e.target.value)}
