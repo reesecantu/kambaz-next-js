@@ -199,7 +199,10 @@ export default function Dashboard() {
                           id={`wd-unenroll-${course._id}`}
                           onClick={async (event) => {
                             event.preventDefault();
-                            await client.unenrollFromCourse(course._id);
+                            await client.unenrollFromCourse(
+                              currentUser._id,
+                              course._id,
+                            );
                             dispatch(
                               unenroll({
                                 userId: currentUser._id,
@@ -217,7 +220,10 @@ export default function Dashboard() {
                           id={`wd-enroll-${course._id}`}
                           onClick={async (event) => {
                             event.preventDefault();
-                            await client.enrollInCourse(course._id);
+                            await client.enrollIntoCourse(
+                              currentUser._id,
+                              course._id,
+                            );
                             dispatch(
                               enroll({
                                 userId: currentUser._id,

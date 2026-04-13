@@ -3,13 +3,12 @@
 import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import { FormControl } from "react-bootstrap";
-import PeopleTable from "../../courses/[cid]/people/table/page";
+import PeopleTable from "../../courses/[cid]/people/Table";
 import * as client from "../client";
 import { FaPlus } from "react-icons/fa6";
 export default function Users() {
   const [users, setUsers] = useState<any[]>([]);
   const [role, setRole] = useState("");
-  const [name, setName] = useState("");
   const filterUsersByRole = async (role: string) => {
     setRole(role);
     if (role) {
@@ -20,7 +19,6 @@ export default function Users() {
     }
   };
   const filterUsersByName = async (name: string) => {
-    setName(name);
     if (name) {
       const users = await client.findUsersByPartialName(name);
       setUsers(users);
