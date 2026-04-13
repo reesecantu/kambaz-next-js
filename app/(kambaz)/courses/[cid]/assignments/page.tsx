@@ -28,12 +28,17 @@ export default function Assignments() {
   );
 
   const fetchAssignments = async () => {
+    if (!cid) {
+      dispatch(setAssignments([]));
+      return;
+    }
     const data = await client.findAssignmentsForCourse(cid);
     dispatch(setAssignments(data));
   };
+
   useEffect(() => {
     fetchAssignments();
-  }, []);
+  }, [cid]);
 
   const removeAssignment = async (assignmentId: string) => {
     await client.deleteAssignment(assignmentId);

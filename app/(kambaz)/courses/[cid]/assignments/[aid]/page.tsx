@@ -10,7 +10,7 @@ import {
   FormLabel,
 } from "react-bootstrap";
 import { useParams, useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addAssignment, updateAssignment } from "../../assignments/reducer";
 import { RootState } from "../../../../store";
@@ -35,29 +35,50 @@ export default function AssignmentEditor() {
 
   const assignment = assignments.find((a) => a._id === aid && a.course === cid);
 
-  const [formData, setFormData] = useState(() => {
-    if (!isNewAssignment && assignment) {
-      return {
-        _id: assignment._id,
-        title: assignment.title,
-        description: assignment.description,
-        course: assignment.course,
-        points: assignment.points,
-        dueDate: assignment.dueDate,
-        availableDate: assignment.availableDate,
-        availableUntilDate: assignment.availableUntilDate,
-      };
-    }
-    return {
-      title: "",
-      description: "",
-      course: cid,
-      points: 100,
-      dueDate: "",
-      availableDate: "",
-      availableUntilDate: "",
-    };
+  const [formData, setFormData] = useState({
+    _id: "",
+    title: "",
+    description: "",
+    course: cid,
+    points: 100,
+    dueDate: "",
+    availableDate: "",
+    availableUntilDate: "",
   });
+
+  useEffect(() => {
+    const fetchAssignment = async () => {
+      if (isNewAssignment) {
+        setFormData({
+          _id: "",
+          title: "",
+          description: "",
+          course: cid,
+          points: 100,
+          dueDate: "",
+          availableDate: "",
+          availableUntilDate: "",
+        });
+        return;
+      }
+      const assignmentFromApi =
+        assignment ?? (await client.findAssignmentById(aid));
+      if (!assignmentFromApi) {
+        return;
+      }
+      setFormData({
+        _id: assignmentFromApi._id,
+        title: assignmentFromApi.title,
+        description: assignmentFromApi.description,
+        course: assignmentFromApi.course,
+        points: assignmentFromApi.points,
+        dueDate: assignmentFromApi.dueDate,
+        availableDate: assignmentFromApi.availableDate,
+        availableUntilDate: assignmentFromApi.availableUntilDate,
+      });
+    };
+    fetchAssignment();
+  }, [aid, cid, isNewAssignment, assignment]);
 
   const saveAssignment = async () => {
     if (!canEdit) {
@@ -65,7 +86,10 @@ export default function AssignmentEditor() {
       return;
     }
     if (isNewAssignment) {
-      const newAssignment = await client.createAssignmentForCourse(cid, formData);
+      const newAssignment = await client.createAssignmentForCourse(
+        cid,
+        formData,
+      );
       dispatch(addAssignment(newAssignment));
     } else {
       const updated = await client.updateAssignment(formData);
