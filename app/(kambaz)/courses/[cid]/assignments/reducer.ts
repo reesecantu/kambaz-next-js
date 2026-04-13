@@ -1,7 +1,20 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = {
+// add a type for assignments becuase typescript is mean :(
+interface Assignment {
+  _id: string;
+  title: string;
+  description: string;
+  course: string;
+  points: number;
+  dueDate: string;
+  availableDate: string;
+  availableUntilDate: string;
+  [key: string]: any;
+}
+
+const initialState: { assignments: Assignment[] } = {
   assignments: [],
 };
 
