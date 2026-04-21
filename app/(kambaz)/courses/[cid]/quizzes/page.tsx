@@ -1,4 +1,5 @@
 export default function Quizzes() {
+  
   return (
     <div className="p-4">
       <h1>Quizzes</h1>
