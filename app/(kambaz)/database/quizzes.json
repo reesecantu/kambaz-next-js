@@ -1,0 +1,26 @@
+[
+  {
+    "_id": "Q101",
+    "title": "Midterm Quiz",
+    "description": "Covers chapters 1-5. Good luck!",
+    "course": "RS101",
+    "quizType": "GRADED_QUIZ",
+    "points": 100,
+    "assignmentGroup": "QUIZZES",
+    "shuffleAnswers": true,
+    "timeLimit": 30,
+    "hasTimeLimit": true,
+    "multipleAttempts": false,
+    "howManyAttempts": 1,
+    "showCorrectAnswers": "after_due_date",
+    "accessCode": "",
+    "oneQuestionAtATime": true,
+    "webcamRequired": false,
+    "lockQuestionsAfterAnswering": false,
+    "dueDate": "2026-05-01T23:59:00",
+    "availableDate": "2026-04-20T00:00:00",
+    "untilDate": "2026-05-02T23:59:00",
+    "published": true,
+    "questions": []
+  }
+]
