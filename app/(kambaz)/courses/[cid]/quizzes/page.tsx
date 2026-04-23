@@ -112,7 +112,7 @@ export default function Quizzes() {
                 >
                   <BsGripVertical className="me-2 fs-3" />
                   <BsFileText className="me-2 fs-3 text-success" />
-                  <div className="ms-2 flex-grow-1">
+                  <div className="ms-2 grow">
                     <Link
                       href={`/courses/${cid}/quizzes/${quiz._id}`}
                       className="text-decoration-none text-dark fw-bold"

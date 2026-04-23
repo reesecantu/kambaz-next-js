@@ -6,7 +6,11 @@ export interface Quiz {
   title: string;
   description: string;
   course: string;
-  quizType: "GRADED_QUIZ" | "PRACTICE_QUIZ" | "GRADED_SURVEY" | "UNGRADED_SURVEY";
+  quizType:
+    | "GRADED_QUIZ"
+    | "PRACTICE_QUIZ"
+    | "GRADED_SURVEY"
+    | "UNGRADED_SURVEY";
   points: number;
   assignmentGroup: "QUIZZES" | "EXAMS" | "ASSIGNMENTS" | "PROJECTS";
   shuffleAnswers: boolean;
@@ -23,8 +27,35 @@ export interface Quiz {
   availableDate: string;
   untilDate: string;
   published: boolean;
-  questions: any[];
+  questions: QuizQuestion[];
 }
+
+export interface QuestionBase {
+  _id: string;
+  title: string;
+  points: number;
+  questionText: string;
+}
+
+export interface MultipleChoiceQuestion extends QuestionBase {
+  type: "MULTIPLE_CHOICE";
+  choices: { text: string; isCorrect: boolean }[];
+}
+
+export interface TrueFalseQuestion extends QuestionBase {
+  type: "TRUE_FALSE";
+  correctAnswer: boolean;
+}
+
+export interface FillInTheBlankQuestion extends QuestionBase {
+  type: "FILL_IN_THE_BLANK";
+  correctAnswers: string[];
+}
+
+export type QuizQuestion =
+  | MultipleChoiceQuestion
+  | TrueFalseQuestion
+  | FillInTheBlankQuestion;
 
 export const defaultQuiz: Omit<Quiz, "_id" | "course"> = {
   title: "New Quiz",
@@ -79,6 +110,11 @@ const quizzesSlice = createSlice({
   },
 });
 
-export const { addQuiz, deleteQuiz, updateQuiz, setQuizzes, togglePublishQuiz } =
-  quizzesSlice.actions;
+export const {
+  addQuiz,
+  deleteQuiz,
+  updateQuiz,
+  setQuizzes,
+  togglePublishQuiz,
+} = quizzesSlice.actions;
 export default quizzesSlice.reducer;
