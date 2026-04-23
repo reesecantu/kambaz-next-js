@@ -5,7 +5,6 @@
     "description": "Covers chapters 1-5. Good luck!",
     "course": "RS101",
     "quizType": "GRADED_QUIZ",
-    "points": 100,
     "assignmentGroup": "QUIZZES",
     "shuffleAnswers": true,
     "timeLimit": 30,

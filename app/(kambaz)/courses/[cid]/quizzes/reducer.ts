@@ -11,7 +11,6 @@ export interface Quiz {
     | "PRACTICE_QUIZ"
     | "GRADED_SURVEY"
     | "UNGRADED_SURVEY";
-  points: number;
   assignmentGroup: "QUIZZES" | "EXAMS" | "ASSIGNMENTS" | "PROJECTS";
   shuffleAnswers: boolean;
   timeLimit: number;
@@ -61,7 +60,6 @@ export const defaultQuiz: Omit<Quiz, "_id" | "course"> = {
   title: "New Quiz",
   description: "",
   quizType: "GRADED_QUIZ",
-  points: 0,
   assignmentGroup: "QUIZZES",
   shuffleAnswers: true,
   timeLimit: 20,

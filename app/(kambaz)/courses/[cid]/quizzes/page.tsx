@@ -126,7 +126,7 @@ export default function Quizzes() {
                           {new Date(quiz.dueDate).toLocaleDateString()}
                         </>
                       )}
-                      {` | ${quiz.points} pts | ${quiz.questions.length} Questions`}
+                      {` | ${quiz.questions.reduce((sum, q) => sum + q.points, 0)} pts | ${quiz.questions.length} Questions`}
                     </div>
                   </div>
                   <div className="ms-auto d-flex align-items-center gap-2">
