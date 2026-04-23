@@ -1,3 +1,4 @@
+"use client";
 import { RootState } from "@/app/(kambaz)/store";
 import { useParams } from "next/navigation";
 import { Nav, NavItem, NavLink } from "react-bootstrap";
@@ -24,6 +25,11 @@ export default function QuizPreview() {
           <NavLink href="#questions">Questions</NavLink>
         </NavItem>
       </Nav>
+      <div className="d-flex justify-content-end mt-4">
+        <button className="btn btn-secondary me-2">Cancel</button>
+        <button className="btn btn-primary me-2">Save</button>
+        <button className="btn btn-success">Save & Publish</button>
+      </div>
     </div>
   );
 }
