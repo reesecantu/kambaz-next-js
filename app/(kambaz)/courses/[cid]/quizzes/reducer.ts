@@ -78,8 +78,14 @@ export const defaultQuiz: Omit<Quiz, "_id" | "course"> = {
   questions: [],
 };
 
-const initialState: { quizzes: Quiz[] } = {
+export interface PendingAttempt {
+  quizId: string;
+  answers: Record<string, number | boolean | string>;
+}
+
+const initialState: { quizzes: Quiz[]; pendingAttempt: PendingAttempt | null } = {
   quizzes: [],
+  pendingAttempt: null,
 };
 
 const quizzesSlice = createSlice({
@@ -105,6 +111,9 @@ const quizzesSlice = createSlice({
         q._id === quizId ? { ...q, published: !q.published } : q,
       ) as any;
     },
+    setPendingAttempt: (state, { payload }: { payload: PendingAttempt }) => {
+      state.pendingAttempt = payload;
+    },
   },
 });
 
@@ -114,5 +123,6 @@ export const {
   updateQuiz,
   setQuizzes,
   togglePublishQuiz,
+  setPendingAttempt,
 } = quizzesSlice.actions;
 export default quizzesSlice.reducer;

@@ -20,6 +20,36 @@
     "availableDate": "2026-04-20T00:00:00",
     "untilDate": "2026-05-02T23:59:00",
     "published": true,
-    "questions": []
+    "questions": [
+      {
+        "_id": "Q101-1",
+        "title": "Capital of France",
+        "type": "MULTIPLE_CHOICE",
+        "questionText": "What is the capital of France?",
+        "points": 5,
+        "choices": [
+          { "text": "Berlin", "isCorrect": false },
+          { "text": "Madrid", "isCorrect": false },
+          { "text": "Paris", "isCorrect": true },
+          { "text": "Rome", "isCorrect": false }
+        ]
+      },
+      {
+        "_id": "Q101-2",
+        "title": "Earth Shape",
+        "type": "TRUE_FALSE",
+        "questionText": "The Earth is flat.",
+        "points": 5,
+        "correctAnswer": false
+      },
+      {
+        "_id": "Q101-3",
+        "title": "Chemical Symbol for Water",
+        "type": "FILL_IN_THE_BLANK",
+        "questionText": "The chemical symbol for water is ____.",
+        "points": 5,
+        "correctAnswers": ["H2O", "h2o"]
+      }
+    ]
   }
 ]
