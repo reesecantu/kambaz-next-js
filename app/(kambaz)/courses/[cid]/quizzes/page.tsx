@@ -54,6 +54,12 @@ export default function Quizzes() {
     }
   };
 
+  const handleTogglePublish = async (quiz: Quiz) => {
+    const updated = { ...quiz, published: !quiz.published };
+    await client.updateQuiz(updated);
+    dispatch(togglePublishQuiz(quiz._id));
+  };
+
   const handleAddQuiz = async () => {
     const newQuiz = await client.createQuizForCourse(cid, { ...defaultQuiz, course: cid });
     dispatch(addQuiz(newQuiz));
@@ -131,14 +137,14 @@ export default function Quizzes() {
                         className="text-success fs-5"
                         title="Published"
                         style={{ cursor: canEdit ? "pointer" : "default" }}
-                        onClick={() => canEdit && dispatch(togglePublishQuiz(quiz._id))}
+                        onClick={() => canEdit && handleTogglePublish(quiz)}
                       />
                     ) : (
                       <BsXCircle
                         className="text-secondary fs-5"
                         title="Unpublished"
                         style={{ cursor: canEdit ? "pointer" : "default" }}
-                        onClick={() => canEdit && dispatch(togglePublishQuiz(quiz._id))}
+                        onClick={() => canEdit && handleTogglePublish(quiz)}
                       />
                     )}
                     {canEdit && (
@@ -159,7 +165,7 @@ export default function Quizzes() {
                           <Dropdown.Item onClick={() => handleDelete(quiz._id)}>
                             Delete
                           </Dropdown.Item>
-                          <Dropdown.Item onClick={() => dispatch(togglePublishQuiz(quiz._id))}>
+                          <Dropdown.Item onClick={() => handleTogglePublish(quiz)}>
                             {quiz.published ? "Unpublish" : "Publish"}
                           </Dropdown.Item>
                         </Dropdown.Menu>

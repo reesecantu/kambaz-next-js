@@ -1,10 +1,11 @@
 "use client";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { useSelector } from "react-redux";
-import { Col, Row } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
+import { Button, Col, Row } from "react-bootstrap";
 import { RootState } from "../../../../store";
-import { Quiz } from "../reducer";
+import { Quiz, togglePublishQuiz } from "../reducer";
+import * as client from "../../../client";
 
 const QUIZ_TYPE_LABELS: Record<Quiz["quizType"], string> = {
   GRADED_QUIZ: "Graded Quiz",
@@ -27,6 +28,7 @@ function formatDate(dateStr: string): string {
 
 export default function QuizDetails() {
   const { cid, qid } = useParams();
+  const dispatch = useDispatch();
   const { currentUser } = useSelector(
     (state: RootState) =>
       state.accountReducer as { currentUser: { role?: string } | null },
@@ -41,6 +43,12 @@ export default function QuizDetails() {
 
   const totalPoints = quiz.questions.reduce((sum, q) => sum + q.points, 0);
 
+  const handleTogglePublish = async () => {
+    const updated = { ...quiz, published: !quiz.published };
+    await client.updateQuiz(updated);
+    dispatch(togglePublishQuiz(quiz._id));
+  };
+
   return (
     <div id="wd-quiz-details" className="p-4">
       <div className="d-flex gap-2 mb-4">
@@ -52,6 +60,12 @@ export default function QuizDetails() {
             <Link href={`/courses/${cid}/quizzes/${qid}/edit`} className="btn btn-secondary">
               Edit
             </Link>
+            <Button
+              variant={quiz.published ? "outline-secondary" : "outline-success"}
+              onClick={handleTogglePublish}
+            >
+              {quiz.published ? "Unpublish" : "Publish"}
+            </Button>
           </>
         ) : (
           <Link href={`/courses/${cid}/quizzes/${qid}/preview`} className="btn btn-danger">

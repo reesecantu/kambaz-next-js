@@ -45,7 +45,7 @@ export default function QuizEditor() {
   const save = async () => {
     await client.updateQuiz(draftQuiz);
     dispatch(updateQuiz(draftQuiz));
-    router.push(`/courses/${cid}/quizzes`);
+    router.push(`/courses/${cid}/quizzes/${qid}`);
   };
 
   const saveAndPublish = async () => {
@@ -74,6 +74,7 @@ export default function QuizEditor() {
       ...draftQuiz,
       questions: [...draftQuiz.questions, newQuestion],
     });
+    setEditingQuestionId(newQuestion._id);
   };
 
   return (
