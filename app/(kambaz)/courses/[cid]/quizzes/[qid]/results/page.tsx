@@ -3,39 +3,10 @@ import { RootState } from "@/app/(kambaz)/store";
 import { useParams, useRouter } from "next/navigation";
 import { Button } from "react-bootstrap";
 import { useSelector } from "react-redux";
-import {
-  MultipleChoiceQuestion,
-  TrueFalseQuestion,
-  FillInTheBlankQuestion,
-  QuizQuestion,
-} from "../../reducer";
+import { scoreQuestion } from "../../scoreQuestion";
 import MultipleChoiceResultCard from "./MultipleChoiceResultCard";
 import TrueFalseResultCard from "./TrueFalseResultCard";
 import FillInBlankResultCard from "./FillInBlankResultCard";
-
-function scoreQuestion(
-  question: QuizQuestion,
-  answers: Record<string, number | boolean | string>,
-): { correct: boolean; earnedPoints: number } {
-  const answer = answers[question._id];
-  let correct = false;
-
-  if (question.type === "MULTIPLE_CHOICE") {
-    const idx = answer as number | undefined;
-    correct =
-      idx !== undefined &&
-      !!(question as MultipleChoiceQuestion).choices[idx]?.isCorrect;
-  } else if (question.type === "TRUE_FALSE") {
-    correct = answer === (question as TrueFalseQuestion).correctAnswer;
-  } else if (question.type === "FILL_IN_THE_BLANK") {
-    const text = (answer as string | undefined) ?? "";
-    correct = (question as FillInTheBlankQuestion).correctAnswers.some(
-      (a) => a.toLowerCase() === text.trim().toLowerCase(),
-    );
-  }
-
-  return { correct, earnedPoints: correct ? question.points : 0 };
-}
 
 export default function QuizResults() {
   const params = useParams();

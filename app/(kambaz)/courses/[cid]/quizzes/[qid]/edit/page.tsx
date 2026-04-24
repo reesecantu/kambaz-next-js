@@ -5,9 +5,10 @@ import { v4 as uuidv4 } from "uuid";
 import { Button, Nav, NavItem, NavLink } from "react-bootstrap";
 import QuizDetailsForm from "./QuizDetailsForm";
 import { BsCheckCircleFill, BsXCircle } from "react-icons/bs";
-import { useDispatch } from "react-redux";
-import { Quiz, QuizQuestion, updateQuiz } from "../../reducer";
-import quizzesData from "@/app/(kambaz)/database/quizzes.json";
+import { useDispatch, useSelector } from "react-redux";
+import { QuizQuestion, updateQuiz } from "../../reducer";
+import * as client from "../../../../client";
+import { RootState } from "@/app/(kambaz)/store";
 import MultipleChoiceEditor from "./MultipleChoiceEditor";
 import TrueFalseEditor from "./TrueFalseEditor";
 import FillInTheBlankEditor from "./FillInTheBlankEditor";
@@ -17,8 +18,7 @@ export default function QuizEditor() {
   const { cid, qid } = params;
   const router = useRouter();
   const dispatch = useDispatch();
-  //   const { quizzes } = useSelector((state: RootState) => state.quizzesReducer);
-  const quizzes = quizzesData as Quiz[];
+  const { quizzes } = useSelector((state: RootState) => state.quizzesReducer);
   const quiz = quizzes.find((q) => q._id === qid);
 
   const [activeTab, setActiveTab] = useState("details");
@@ -42,15 +42,16 @@ export default function QuizEditor() {
     router.push(`/courses/${cid}/quizzes`);
   };
 
-  const save = () => {
-    // TODO save to storage
+  const save = async () => {
+    await client.updateQuiz(draftQuiz);
     dispatch(updateQuiz(draftQuiz));
     router.push(`/courses/${cid}/quizzes`);
   };
 
-  const saveAndPublish = () => {
-    // TODO save to storage
-    dispatch(updateQuiz({ ...draftQuiz, published: true }));
+  const saveAndPublish = async () => {
+    const published = { ...draftQuiz, published: true };
+    await client.updateQuiz(published);
+    dispatch(updateQuiz(published));
     router.push(`/courses/${cid}/quizzes`);
   };
 

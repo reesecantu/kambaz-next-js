@@ -4,7 +4,13 @@ import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import { Button } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import { QuizQuestion, setPendingAttempt } from "../../reducer";
+import {
+  Attempt,
+  QuizQuestion,
+  appendAttempt,
+  setPendingAttempt,
+} from "../../reducer";
+import { scoreQuestion } from "../../scoreQuestion";
 import MultipleChoiceViewer from "./MultipleChoiceViewer";
 import TrueFalseViewer from "./TrueFalseViewer";
 import FillInTheBlankViewer from "./FillInTheBlankViewer";
@@ -32,6 +38,7 @@ export default function QuizPreview() {
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<Answers>({});
+  const [attemptLimitReached, setAttemptLimitReached] = useState(false);
 
   if (!quiz) return <div>Quiz not found</div>;
 
@@ -44,7 +51,34 @@ export default function QuizPreview() {
     setAnswers((prev) => ({ ...prev, [id]: value }));
 
   const handleSubmit = () => {
+    if (!isFaculty && currentUser) {
+      const priorAttempts = (quiz.attempts ?? []).filter(
+        (a) => a.userId === currentUser._id,
+      ).length;
+      const limit = quiz.multipleAttempts ? quiz.howManyAttempts : 1;
+      if (priorAttempts >= limit) {
+        setAttemptLimitReached(true);
+        return;
+      }
+    }
+
+    const scored = questions.map((q) => scoreQuestion(q, answers));
+    const totalPoints = questions.reduce((sum, q) => sum + q.points, 0);
+    const score = scored.reduce((sum, s) => sum + s.earnedPoints, 0);
+
     dispatch(setPendingAttempt({ quizId: quiz._id, answers }));
+
+    if (!isFaculty && currentUser) {
+      const attempt: Attempt = {
+        userId: currentUser._id,
+        date: new Date().toISOString(),
+        answers,
+        score,
+        totalPoints,
+      };
+      dispatch(appendAttempt({ quizId: quiz._id, attempt }));
+    }
+
     router.push(`/courses/${cid}/quizzes/${qid}/results`);
   };
 
@@ -61,11 +95,18 @@ export default function QuizPreview() {
           <hr />
         </div>
       )}
+      {attemptLimitReached && (
+        <div className="alert alert-warning py-2">
+          You have reached the maximum number of attempts for this quiz.
+        </div>
+      )}
       <div className="d-flex gap-4">
         <div className="flex-fill">
           <div>
             <div className="d-flex justify-content-between align-items-start p-2 border bg-secondary">
-              <strong>Question {currentIndex + 1}: {question.title}</strong>
+              <strong>
+                Question {currentIndex + 1}: {question.title}
+              </strong>
               <span className="">{question.points} points</span>
             </div>
             <div className="border p-3 mb-4">

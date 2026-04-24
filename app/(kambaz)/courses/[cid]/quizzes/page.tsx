@@ -10,8 +10,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { RootState } from "../../../store";
 import { addQuiz, defaultQuiz, deleteQuiz, setQuizzes, togglePublishQuiz, Quiz } from "./reducer";
-import { quizzes as quizzesData } from "../../../database";
-import { v4 as uuidv4 } from "uuid";
+import * as client from "../../client";
 
 function getAvailability(quiz: Quiz): string {
   const now = new Date();
@@ -45,21 +44,18 @@ export default function Quizzes() {
     });
 
   useEffect(() => {
-    dispatch(setQuizzes(quizzesData as Quiz[]));
-  }, [dispatch]);
+    client.findQuizzesForCourse(cid).then((data) => dispatch(setQuizzes(data as Quiz[])));
+  }, [cid, dispatch]);
 
-  const handleDelete = (quizId: string) => {
+  const handleDelete = async (quizId: string) => {
     if (window.confirm("Are you sure you want to delete this quiz?")) {
+      await client.deleteQuiz(quizId);
       dispatch(deleteQuiz(quizId));
     }
   };
 
-  const handleAddQuiz = () => {
-    const newQuiz: Quiz = {
-      ...defaultQuiz,
-      _id: uuidv4(),
-      course: cid,
-    };
+  const handleAddQuiz = async () => {
+    const newQuiz = await client.createQuizForCourse(cid, { ...defaultQuiz, course: cid });
     dispatch(addQuiz(newQuiz));
     router.push(`/courses/${cid}/quizzes/${newQuiz._id}/edit`);
   };

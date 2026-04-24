@@ -27,6 +27,15 @@ export interface Quiz {
   untilDate: string;
   published: boolean;
   questions: QuizQuestion[];
+  attempts: Attempt[];
+}
+
+export interface Attempt {
+  userId: string;
+  date: string;
+  answers: Record<string, number | boolean | string>;
+  score: number;
+  totalPoints: number;
 }
 
 export interface QuestionBase {
@@ -76,6 +85,7 @@ export const defaultQuiz: Omit<Quiz, "_id" | "course"> = {
   untilDate: "",
   published: false,
   questions: [],
+  attempts: [],
 };
 
 export interface PendingAttempt {
@@ -114,6 +124,13 @@ const quizzesSlice = createSlice({
     setPendingAttempt: (state, { payload }: { payload: PendingAttempt }) => {
       state.pendingAttempt = payload;
     },
+    appendAttempt: (
+      state,
+      { payload: { quizId, attempt } }: { payload: { quizId: string; attempt: Attempt } }
+    ) => {
+      const quiz = state.quizzes.find((q: any) => q._id === quizId) as any;
+      if (quiz) quiz.attempts = [...(quiz.attempts ?? []), attempt];
+    },
   },
 });
 
@@ -124,5 +141,6 @@ export const {
   setQuizzes,
   togglePublishQuiz,
   setPendingAttempt,
+  appendAttempt,
 } = quizzesSlice.actions;
 export default quizzesSlice.reducer;
