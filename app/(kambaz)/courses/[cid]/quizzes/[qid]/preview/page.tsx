@@ -24,6 +24,10 @@ export default function QuizPreview() {
   const dispatch = useDispatch();
   const { cid, qid } = params;
   const { quizzes } = useSelector((state: RootState) => state.quizzesReducer);
+  const currentUser = useSelector(
+    (state: RootState) => state.accountReducer.currentUser,
+  );
+  const isFaculty = currentUser?.role === "FACULTY";
   const quiz = quizzes.find((q) => q._id === qid);
 
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -41,36 +45,7 @@ export default function QuizPreview() {
 
   const handleSubmit = () => {
     dispatch(setPendingAttempt({ quizId: quiz._id, answers }));
-    router.push(`/kambaz/courses/${cid}/quizzes/${qid}/results`);
-  };
-
-  const renderQuestion = () => {
-    switch (question.type) {
-      case "MULTIPLE_CHOICE":
-        return (
-          <MultipleChoiceViewer
-            question={question}
-            answer={answers[question._id] as number | undefined}
-            onAnswer={(i) => setAnswer(question._id, i)}
-          />
-        );
-      case "TRUE_FALSE":
-        return (
-          <TrueFalseViewer
-            question={question}
-            answer={answers[question._id] as boolean | undefined}
-            onAnswer={(v) => setAnswer(question._id, v)}
-          />
-        );
-      case "FILL_IN_THE_BLANK":
-        return (
-          <FillInTheBlankViewer
-            question={question}
-            answer={answers[question._id] as string | undefined}
-            onAnswer={(v) => setAnswer(question._id, v)}
-          />
-        );
-    }
+    router.push(`/courses/${cid}/quizzes/${qid}/results`);
   };
 
   return (
@@ -78,15 +53,45 @@ export default function QuizPreview() {
       <h2>{quiz.title}</h2>
       {quiz.description && <p className="text-muted">{quiz.description}</p>}
       <hr />
+      {isFaculty && (
+        <div>
+          <div className="alert alert-danger py-2">
+            This is a Faculty preview of the quiz
+          </div>
+          <hr />
+        </div>
+      )}
       <div className="d-flex gap-4">
         <div className="flex-fill">
-          <div className="d-flex justify-content-between align-items-center mb-3">
-            <strong>{question.title}</strong>
-            <span className="text-muted">
-              Question {currentIndex + 1} of {total}
-            </span>
+          <div>
+            <div className="d-flex justify-content-between align-items-start p-2 border bg-secondary">
+              <strong>Question {currentIndex + 1}: {question.title}</strong>
+              <span className="">{question.points} points</span>
+            </div>
+            <div className="border p-3 mb-4">
+              {question.type === "MULTIPLE_CHOICE" && (
+                <MultipleChoiceViewer
+                  question={question}
+                  answer={answers[question._id] as number | undefined}
+                  onAnswer={(i) => setAnswer(question._id, i)}
+                />
+              )}
+              {question.type === "TRUE_FALSE" && (
+                <TrueFalseViewer
+                  question={question}
+                  answer={answers[question._id] as boolean | undefined}
+                  onAnswer={(v) => setAnswer(question._id, v)}
+                />
+              )}
+              {question.type === "FILL_IN_THE_BLANK" && (
+                <FillInTheBlankViewer
+                  question={question}
+                  answer={answers[question._id] as string | undefined}
+                  onAnswer={(v) => setAnswer(question._id, v)}
+                />
+              )}
+            </div>
           </div>
-          <div className="border rounded p-3 mb-4">{renderQuestion()}</div>
           <div className="d-flex justify-content-between">
             <Button
               variant="secondary"
@@ -103,14 +108,21 @@ export default function QuizPreview() {
                 Next
               </Button>
             ) : (
-              <Button variant="success" disabled={!allAnswered} onClick={handleSubmit}>
+              <Button
+                variant="success"
+                disabled={!allAnswered}
+                onClick={handleSubmit}
+              >
                 Submit Quiz
               </Button>
             )}
           </div>
         </div>
         <div style={{ width: "200px", flexShrink: 0 }}>
-          <div className="border rounded p-2" style={{ maxHeight: "400px", overflowY: "auto" }}>
+          <div
+            className="border rounded p-2"
+            style={{ maxHeight: "400px", overflowY: "auto" }}
+          >
             <div className="fw-bold mb-2 small">Questions</div>
             {questions.map((q, i) => (
               <div
@@ -122,8 +134,7 @@ export default function QuizPreview() {
                 <span style={{ display: "inline-block", width: "1rem" }}>
                   {isAnswered(q, answers) ? "✔" : ""}
                 </span>
-                Question {i + 1}.
-                {/* TODO: Test the overflow handling */}
+                Question {i + 1}.{/* TODO: Test the overflow handling */}
               </div>
             ))}
           </div>
