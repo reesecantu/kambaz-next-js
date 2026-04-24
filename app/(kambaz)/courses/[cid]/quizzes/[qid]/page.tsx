@@ -133,13 +133,11 @@ export default function QuizDetails() {
 
           <Row className="fw-bold mb-1">
             <Col sm={3} className="text-end">Due</Col>
-            <Col sm={2}>For</Col>
             <Col sm={3}>Available from</Col>
             <Col sm={3}>Until</Col>
           </Row>
           <Row>
             <Col sm={3} className="text-end">{formatDate(quiz.dueDate)}</Col>
-            <Col sm={2}>Everyone</Col>
             <Col sm={3}>{formatDate(quiz.availableDate)}</Col>
             <Col sm={3}>{formatDate(quiz.untilDate)}</Col>
           </Row>

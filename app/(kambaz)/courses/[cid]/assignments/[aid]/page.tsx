@@ -222,8 +222,6 @@ export default function AssignmentEditor() {
           </FormLabel>
           <Col sm={9}>
             <div className="border rounded p-3">
-              <FormLabel className="fw-bold">Assign to</FormLabel>
-              <FormControl defaultValue="Everyone" readOnly={!canEdit} />
               <FormLabel className="fw-bold">Due</FormLabel>
               <FormControl
                 type="datetime-local"
